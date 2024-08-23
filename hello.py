@@ -1,13 +1,74 @@
-from flask import Flask
 
-app = Flask(__name__)
+# Flask Exercise:
+# Build a simple Flask web application with at least two routes: 
+# a home page and an about page. 
+# The home page should display a welcome message, 
+# and the about page should display some information about the app.
 
-@app.route('/')
-def home():
-    return "Hello, Flask!"
+
+
+# Multiprocessing
+'''
+import multiprocessing as mp
+import math as m
+
+def cal_factorial(n):
+    return m.factorial(n)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    numbers = [5, 7, 10, 12, 15]
+
+# Create a Pool of worker processes
+    with mp.Pool() as pool:
+# The map() method applies a cal_factorial function to every item in the input list
+        result = pool.map(cal_factorial, numbers)
+# The result are returned as a list
+    print(result)
+'''
+
+
+# Working with Pandas for Data Analysis
+# It provides data structures like Series and DataFrame
+'''
+import pandas as pd
+
+# Load a CSV file into a DataFrame. 
+# Perform basic operations like filtering rows, adding new columns, and grouping data by a specific column. 
+# Save the modified DataFrame to a new CSV file.
+# Read from CSV:
+de = pd.read_csv('cw_20240823.csv')
+filtered_ACB = de[de['CK'] == 'ACB']
+print(filtered_ACB)
+de['FairValue'] =  [0] * 96
+print(de)
+de.to_csv('cw_20240823_refine.csv')
+'''
+
+'''
+# Dictionary
+data = {
+    'Name': ['Alice','Bob', 'Charlie', 'David'],
+    'Age': [24, 27, 22, 32],
+    'City': ['New York', 'Los Angeles', 'Chicago', 'Houston']
+}
+# Create a Dataframe from a dictionary
+df = pd.DataFrame(data)
+print(df)
+
+# Display column names:
+print(df.columns)
+print(df.describe())
+
+# Filtering data
+filtered_df = df[df['Age'] > 25]
+print(filtered_df)
+# Adding new column
+df['Salary'] = [50000, 60000, 55000, 70000]
+print(df)
+# Grouping data
+grouped_df = df.groupby('City').mean(numeric_only=True)
+print(grouped_df)
+'''
 
 
 '''
