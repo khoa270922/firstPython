@@ -1,11 +1,28 @@
 
 # Flask Exercise:
+'''
+from flask import Flask
 # Build a simple Flask web application with at least two routes: 
 # a home page and an about page. 
 # The home page should display a welcome message, 
 # and the about page should display some information about the app.
 
+# Flask class is used to create a web application
+app = Flask(__name__)
 
+# define the home page of the web app
+@app.route('/')
+def home():
+    return "Jade homepage welcome!"
+
+@app.route('/noive')
+def about():
+    return "A web by Jade"
+
+# start the web server with debugging enabled
+if __name__ == "__main__":
+    app.run(debug=True)
+'''
 
 # Multiprocessing
 '''
