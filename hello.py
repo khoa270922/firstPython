@@ -1,3 +1,53 @@
+# Creating a simple API with Flask
+from flask import Flask, jsonify
+
+# Extend the Flask API example to add a new route that accepts POST requests 
+# and returns the posted data in JSON format.
+app = Flask(__name__)
+
+@app.route('/api/data', methods = ['GET'])
+
+def get2_data():
+    sample_data = {
+        "name": "Peter",
+        "age": 35,
+        "city": "Cali Que"
+    }
+    return jsonify(sample_data)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+'''
+app = Flask(__name__)
+
+@app.route('/api/data', methods = ['GET'])
+def get_data():
+    sample_data = {
+        "name": "Alice",
+        "age": 30,
+        "city": "New York"
+    }
+    return jsonify(sample_data)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+'''
+
+
+# Consuming an API
+'''
+import requests
+
+response = requests.get("https://api.coindesk.com/v1/bpi/currentprice.json")
+if response.status_code == 200:
+    data = response.json()
+    print(data)
+    print(f"Bitcoin price in USD: {data['bpi']['USD']['rate']}")
+else:
+    print(f"failed to retreived data. Status code: {response.status_code}")
+'''
+
 
 # Flask Exercise:
 '''
