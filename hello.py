@@ -1,13 +1,18 @@
+
+
+
 # Creating a simple API with Flask
-from flask import Flask, jsonify
+'''
+from flask import Flask, jsonify, request
 
 # Extend the Flask API example to add a new route that accepts POST requests 
 # and returns the posted data in JSON format.
 app = Flask(__name__)
 
+# Existing GET route
 @app.route('/api/data', methods = ['GET'])
 
-def get2_data():
+def get_data():
     sample_data = {
         "name": "Peter",
         "age": 35,
@@ -15,25 +20,18 @@ def get2_data():
     }
     return jsonify(sample_data)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-'''
-app = Flask(__name__)
-
-@app.route('/api/data', methods = ['GET'])
-def get_data():
-    sample_data = {
-        "name": "Alice",
-        "age": 30,
-        "city": "New York"
-    }
-    return jsonify(sample_data)
+# New POST route
+@app.route('/api/data', methods = ['POST'])
+def post_data():
+    data = request.json # Get the posted data as JSON
+    if not data:
+        return jsonify({"error": "no data provided"}), 400 # Return an error if no data is provided
+    
+    return jsonify(data), 201 # 201 status code indicates successful creation
 
 if __name__ == "__main__":
     app.run(debug=True)
 '''
-
 
 # Consuming an API
 '''
