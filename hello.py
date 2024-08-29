@@ -1,11 +1,107 @@
-# Basic web scraping 
-# BeautifulSoup: Parses the HTML content of the page.
-# find() Method: Extracts specific HTML elements, like the page title.
 
+
+
+# Advanced Data Analysis with Pandas
+'''
+import pandas as pd
+# Load a dataset into a DataFrame, perform a groupby operation to aggregate data by one column, 
+# and then create a pivot table from the aggregated data.
+
+df = pd.read_csv('sample_data.csv')
+
+#print(df.columns)
+#print(df.index)
+#print(df.values)
+#print(df.head()) # Display the first few rows of the DataFrame
+
+# Group by a specific column (e.g., 'Category') and aggregate the 'Sales' column by summing the values
+grouped_df = df.groupby('Category')['Sales'].sum().reset_index()
+print(grouped_df)
+# Creating a pivot table to summarize data
+pivot_table = df.pivot_table(index='Category', columns='Region', values='Sales', aggfunc='mean')
+print(pivot_table)
+
+#pivot_table.to_csv('pivot_table.csv')
+'''
+
+'''
+# b. Pivot Tables
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', '', 'Bob', 'Charlie'],
+    'Month': ['Jan', 'Jan', 'Jan', 'Feb', 'Feb', 'Feb'],
+    'Sales': [200, 150, 300, 250, 200, 350]
+}
+df = pd.DataFrame(data)
+
+pivot_table = df.pivot_table(index='Name', columns='Month', values='Sales', aggfunc='sum')
+print(pivot_table)
+'''
+
+'''
+# a. Merging DataFrames:
+df1 = pd.DataFrame({
+    'ID': [1,2,3,4],
+    'Name': ['Alice', 'Bob', 'Charlie', '']
+})
+
+df2 = pd.DataFrame({
+    'ID': [1, 2, 3, 4],
+    'Age': [15, '', 5, 1]
+})
+merged_df = pd.merge(df1, df2, on = 'ID', how = 'inner')
+print(df1)
+print(df2)
+print(merged_df)
+'''
+
+# Basic web scraping 
+'''
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
-url = "https://www.binance.com"
+# Target URL
+URL = "https://cafef.vn"
+
+# Step 1: Fetch the Webpage Content
+response = requests.get(URL) 
+
+if response.status_code == 200:
+    page_content = response.text
+else:
+    print(f"Failed. Statuscode: {response.status_code}")
+    exit()
+
+# Step2: Parse the HTML content with BeautifulSoup
+soup = BeautifulSoup(response.text, 'html.parser') 
+
+# Step 3: Extract Titles and Links: Depending on the structure of the webpage, 
+# you need to identify the HTML tags that contain the article titles and links. 
+# Common tags used are <h2>, <h3>, or within anchor tags <a>
+
+articles = soup.find_all('h2') #, class_='article-title') # Adjust the tag and class as needed
+    
+for article in articles:
+    title = article.get_text() # Extract the title text
+    a_tag = article.find('a') # Find the anchor tag within the article element.
+
+    if a_tag: # Check if the anchor tag exists
+        relative_link = a_tag['href'] # Extract the href attribute from the anchor tag
+        full_link = urljoin(URL, relative_link)  # Combine base URL with relative path
+        print(f"Title of link: {title}")
+        print(f"Link: {full_link}")
+    else:
+        print(f"Title: {title} (No link found)")
+        print("-----------------------------")
+'''
+
+# Use BeautifulSoup to scrape the titles and links of all articles from a news website's homepage 
+# (make sure to check the website’s robots.txt file to ensure scraping is allowed).
+
+# BeautifulSoup: Parses the HTML content of the page.
+# find() Method: Extracts specific HTML elements, like the page title.
+'''
+url = "https://www.hsc.com.vn"
 response = requests.get(url)
 
 if response.status_code == 200:
@@ -14,6 +110,7 @@ if response.status_code == 200:
     print(f"Title of the page: {title}")
 else:
     print(f"failed to retrieve webpage")
+'''
 
 # Creating a simple API with Flask
 '''
