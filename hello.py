@@ -1,5 +1,19 @@
+# Basic web scraping 
+# BeautifulSoup: Parses the HTML content of the page.
+# find() Method: Extracts specific HTML elements, like the page title.
 
+import requests
+from bs4 import BeautifulSoup
 
+url = "https://www.binance.com"
+response = requests.get(url)
+
+if response.status_code == 200:
+    soup = BeautifulSoup(response.text, 'html.parser')
+    title = soup.find('title').text
+    print(f"Title of the page: {title}")
+else:
+    print(f"failed to retrieve webpage")
 
 # Creating a simple API with Flask
 '''
