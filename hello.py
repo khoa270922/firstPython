@@ -1,5 +1,50 @@
 
+# Decorators
+# are a powerful way to modify the behavior of functions or methods
+# They allow you to "wrap" a function with another function, 
+# adding extra functionality before or after the original function runs.
 
+# Create a decorator that logs the execution time of a function.
+# Apply this decorator to a function that performs a complex calculation.
+import time
+
+def exec_time_decor(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time() # get current time
+        # Execute the original function
+        result = func(*args, **kwargs) 
+        # '*args' and '**kwargs' allow the decorator to accept any number of positional and keyword arguments.
+        end_time = time.time()
+        exec_time = end_time - start_time
+        print(f"Thoi gian thuc hen cua {func.__name__}: {exec_time:.6f} seconds")
+        return result
+    return wrapper
+
+@exec_time_decor
+def cal_factorial(n):
+    factorial = 1
+    for i in range(1, n+1):
+        factorial *=i
+    return factorial
+    
+factorial_result = cal_factorial(10000)
+print(f"Factorial calculated")
+
+
+'''
+def my_decorator(func): # function that takes another function (func) as an argument.
+    def wrapper(): # unction adds functionality before and after calling func.
+        print("Something is happening before the function is called.")
+        func()
+        print("Something is happening after the function is called.")
+    return wrapper
+# The @my_decorator syntax is a shorthand for applying the decorator to say_hello.
+@my_decorator
+def say_hello():
+    print("Hello!")
+
+say_hello()
+'''
 
 # Advanced Data Analysis with Pandas
 '''
