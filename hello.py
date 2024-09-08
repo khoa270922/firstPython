@@ -1,3 +1,84 @@
+# Context Managers
+# allow you to manage resources:
+#     - files
+#     - network connections
+#     - locks efficiently. 
+# using with blocks to manage resources (in this case, files). 
+# no matter what happens inside the with block, 
+# the file (resource) is always closed after its use.
+# the Flow:
+# __enter__: What happens when the with block starts.
+# __exit__: What happens when the with block ends, even if there’s an error.
+# Check for Exceptions: 
+# If something is not working, 
+# try printing debug messages inside __enter__ and __exit__ to see what's happening step by step.
+
+# Create a context manager that opens and closes a file, 
+# ensuring the file is always closed after reading or writing.
+# Use this context manager to read from and write to a text file.
+
+'''
+# Alternative: using contextlib library
+# easier to work with, especially for simpler resource management tasks like file handling.
+
+from contextlib import contextmanager
+
+@contextmanager
+
+def My_file_manager(filename, mode):
+    f = open(filename, mode)
+    try:
+        yield f
+    finally:
+        f.close()
+
+with My_file_manager('list_num.txt', 'w') as f:
+    f.write('Hello using contextlib')
+
+with My_file_manager('list_num.txt', 'r') as f:
+    print(f.read())
+'''
+
+# Self-define a customer context manager class
+'''
+class MyFileManager:
+# The __init__ method initializes the object with the filename and mode
+    def __init__(self, filename, mode):
+        self.filename = filename
+        self.mode = mode 
+    def __enter__(self):
+        self.file = open(self.filename, self.mode)
+        return self.file
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self.file:
+            self.file.close()
+
+with MyFileManager('list_num.txt', 'w') as f:
+    f.write('Hello My Context Manager')
+
+with MyFileManager('list_num.txt', 'r') as f:
+    content = f.read()
+    print(content)
+'''
+
+# Generators and Iterators
+# Generators allow you to iterate over data in a memory-efficient way, 
+# especially when dealing with large datasets. 
+# They use the yield keyword to produce a value and pause the function, 
+# resuming where it left off when the next value is requested.
+'''
+def count_fibo_to(max_value):
+    a, b = 0, 1
+    while a <= max_value:
+        yield a # The yield keyword turns the count_up_to function into a generator, producing values one at a time.
+        a, b = b, a + b
+        
+max_value = 1000000
+
+for number in count_fibo_to(max_value):
+    print(number)
+'''
 
 # Decorators
 # are a powerful way to modify the behavior of functions or methods
@@ -6,6 +87,7 @@
 
 # Create a decorator that logs the execution time of a function.
 # Apply this decorator to a function that performs a complex calculation.
+'''
 import time
 
 def exec_time_decor(func):
@@ -29,7 +111,7 @@ def cal_factorial(n):
     
 factorial_result = cal_factorial(10000)
 print(f"Factorial calculated")
-
+'''
 
 '''
 def my_decorator(func): # function that takes another function (func) as an argument.
@@ -476,72 +558,7 @@ with open("data.json", "r") as file:
     data_fromfile = json.load(file)
     print(data_fromfile) 
 '''
-    
 
-# OOP in depth
-
-# Create a Shape class with a method area. 
-# Create subclasses Rectangle and Circle, each with their own area method. 
-# Use polymorphism to calculate the area of different shapes.
-'''
-class Shape:
-    def __init__(self, name):
-        self.name = name
-    
-    def area(self):
-        raise NotImplementedError("Subclasses must implement this method")
-
-class Retagle(Shape):
-    def __init__(self, name, width, height):
-        self.name = name
-        self.width = width
-        self.height = height
-    def area(self):
-        return self.width * self.height
-    
-class Circle(Shape):
-    def __init__(self, name, diameter):
-        self.name = name
-        self.diameter = diameter
-    def area(self):
-        return self.diameter * self.diameter * 3.14
-
-ASquare = Retagle("Asquare", 4, 8)
-print("dien tich la: ", ASquare.area())
-
-KCircle = Circle("Circle K", 5)
-print("dien tich hinh tron la: ", KCircle.area())
-'''
-
-# Encapsulation:
-'''
-class BankAccount:
-    def __init__(self, owner, balance =0):
-        self.owner = owner
-        self.__balance = balance # private attribute
-
-    def deposit(self, amount):
-        self.__balance += amount
-
-    def withdraw(self, amount):
-        if amount < self.__balance:
-            self.__balance -= amount
-            return [self.__balance, amount]
-        else:
-            return "Insufficient balance"
-        
-    def get_balance(self):
-        return self.__balance
-    
-# creating an object
-account = BankAccount(input("nhap ten tai khoan: "), float(input("nhap so tien ban dau: ")))
-account.deposit(float(input("ban muon nop bao nhieu: ")))
-print("ten tai khoan duoc tao: ", account.owner)
-print("so tien khoi tao: ", account.get_balance())
-print(account.withdraw(float(input("ban muon rut bao nhieu: "))))
-print(account.get_balance())
-'''
-        
 
 # Modules and Packages Exercise:
 '''
@@ -630,37 +647,6 @@ with open("list_num.txt", "r") as f:
     lines = f.readlines()
     numbers_from_file = [int(line.strip()) for line in lines]
     print(numbers_from_file)
-'''
-
-
-# Inheritance in Classes:
-# Create a parent class Vehicle with attributes make and model, and a method start_engine. 
-# Create a child class Car that inherits from Vehicle and adds a num_doors attribute. 
-# Override the start_engine method to print a custom message for Car.
-'''
-# Define a parent class
-class Vehicle:
-    def __init__(self, make, model):
-        self.make = make
-        self.model = model
-
-def start_engine(self):
-    print("the model ", self.model, "make by ", self.make, " kick start brmmm")
-
-# Define a child class that inherits from Vehicle
-class Car(Vehicle):
-    def __init__(self, make, model, num_doors):
-        super().__init__(make, model)   # Call the parent class's constructor
-        self.num_doors = num_doors
-
-    def start_engine(self):
-        print("the model ", self.model, "make by ", self.make, " with", self.num_doors, " number of doors, kick start brmmm")
-
-# Create an instance of the Car class
-my_car = Car ("Mitsu", "Xpre2022", 4)
-
-# Call methods
-my_car.start_engine()
 '''
 
 
