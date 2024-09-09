@@ -1,14 +1,59 @@
-# Implement a Stack and a Queue from scratch
+# Queues (FIFO - First In, First Out):
+from collections import deque
 
-class myStack:
+class myQueue:
     def __init__(self):
-        self.Stack = []
+        self.queue = deque() # Initialize an empty deque to store queue elements
+    def enqueue(self, item):
+        self.queue.append(item) # Add an item to the end of the queue
+    def dequeue(self):
+        if len(self.queue) == 0: # Handle empty queue case
+            return "Queue is empty."
+        return self.queue.popleft() # Remove and return the front element (FIFO)
+    def front(self):
+        if len(self.queue) == 0:
+            return "Queue is empty."  # Handle empty queue case
+        return self.queue[0]  # Return the front element without removing it
+    def is_empty(self):
+        return len(self.queue) == 0 # Check if the queue is empty
+    def size(self):
+        return len(self.queue)  # Return the number of elements in the queue
+
+queue = myQueue()
+queue.enqueue(240)
+queue.enqueue(250)
+queue.enqueue(260)
+print(queue.dequeue())
+print(queue.dequeue())
+print(queue.size())
+
+# Stacks (LIFO - Last In, First Out):
+'''
+class myStack:
+    def __init__(self): 
+        self.Stack = [] # Initialize an empty list to store stack elements
     def push(self, item):
-        self.Stack.append(item)
+        self.Stack.append(item) # Add an item to the stack
     def pop(self):
-        if len(self.Stack == 0):
-            return "Stack is empty"
-        return self.Stack.pop()
+        if len(self.Stack) == 0:
+            return "Stack is empty" # Handle empty stack case
+        return self.Stack.pop() # Remove and return the last element (LIFO)
+    def peek(self):
+        if len(self.Stack) == 0:
+            return "Stack is empty" # Handle empty stack case
+        return self.Stack[-1] # Return the last element without removing it
+    def is_empty(self):
+        return len(self.Stack) == 0 # Check if the stack is empty
+    def size(self):
+        return len(self.stack)  # Return the number of elements in the stack
+    
+stack = myStack()
+stack.push(10)
+stack.push(20)
+stack.push(30)
+#print(stack.pop())
+print(stack.peek())
+'''
 
 # Create a Shape class with a method area. 
 # Create subclasses Rectangle and Circle, each with their own area method. 

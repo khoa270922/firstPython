@@ -1,3 +1,70 @@
+# Recursion:
+# a process in which a function calls itself as a part of its execution. 
+# It’s an important concept for breaking down complex problems into smaller, 
+# more manageable tasks.
+
+# Key Concepts:
+# Base Case: This stops the recursion. 
+# Without a base case, the recursion will continue indefinitely, leading to a stack overflow.
+# Recursive Case: This is the part where the function calls itself with modified arguments, 
+# moving towards the base case.
+
+# find the greatest common divisor (GCD) of two numbers 
+# using the Euclidean Algorithm.
+def UCLN(a, b):
+    # Base case:
+    if b == 0:
+        return a
+    if a == 0:
+        return b
+    if a == b:
+        return a
+    # Recursive case:
+    if a > b:    
+        return UCLN(b, a%b)
+    return UCLN(a, b%a)
+
+print(UCLN(98700,550))
+
+'''
+# sum of digits of a number
+def sum_digit(n):
+    # Base case
+    if n < 10:
+        return n
+    # Recursive case
+    return (n % 10) + sum_digit (n//10)
+
+print(sum_digit(-3456))
+'''
+
+'''
+# Fibonacci using Recursion
+def fibo(n):
+    # Base case:
+    if n == 0 :
+        return 0
+    elif n ==1: 
+        return 1
+    # Recursive case: sum of two preceding Fibonaci numbers
+    return fibo(n-1) + fibo(n-2)
+
+print(fibo(6))
+'''
+
+'''
+# Factorial using Recursion
+def factorial(n):
+    # Base case
+    if n == 0 or n ==1:
+        return 1
+    # Recursive case:
+    return n * factorial(n-1)
+
+print(factorial(-5))
+'''
+
+
 # Context Managers
 # allow you to manage resources:
 #     - files
