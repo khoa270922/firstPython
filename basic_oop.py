@@ -1,4 +1,14 @@
-# OOP in depth
+# Implement a Stack and a Queue from scratch
+
+class myStack:
+    def __init__(self):
+        self.Stack = []
+    def push(self, item):
+        self.Stack.append(item)
+    def pop(self):
+        if len(self.Stack == 0):
+            return "Stack is empty"
+        return self.Stack.pop()
 
 # Create a Shape class with a method area. 
 # Create subclasses Rectangle and Circle, each with their own area method. 
@@ -76,7 +86,7 @@ class Vehicle:
         self.model = model
 
 def start_engine(self):
-    print("the model ", self.model, "make by ", self.make, " kick start brmmm")
+    print(f"Toi la xe dap nhan hieu {self.brand}, model {self.model}")
 
 # Define a child class that inherits from Vehicle
 class Car(Vehicle):
