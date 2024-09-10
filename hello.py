@@ -1,3 +1,63 @@
+# Sorting Algorithms
+# Merge sort
+def merge_sort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        left_half = arr[:mid]
+        right_half = arr[mid:]
+
+        merge_sort(left_half)  # Recursively sort the left half
+        merge_sort(right_half)  # Recursively sort the right half
+
+        i = j = k = 0
+
+        # Merging the two halves
+        while i < len(left_half) and j < len(right_half):
+            if left_half[i] < right_half[j]:
+                arr[k] = left_half[i]
+                i += 1
+            else:
+                arr[k] = right_half[j]
+                j += 1
+            k += 1
+            print(arr)
+
+        # Checking if any elements were left in the left half
+        while i < len(left_half):
+            arr[k] = left_half[i]
+            i += 1
+            k += 1
+            print(arr)
+
+        # Checking if any elements were left in the right half
+        while j < len(right_half):
+            arr[k] = right_half[j]
+            j += 1
+            k += 1
+            print(arr)
+    return arr
+
+# Test the function
+print([64, 34, 25, 12, 22, 11, 90])
+print(merge_sort([64, 34, 25, 12, 22, 11, 90]))  # Output: [3, 9, 10, 27, 38, 43, 82]
+
+'''
+# Bubble Sort
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                print(arr)
+    return arr
+
+# Test the function
+print([64, 34, 25, 12, 22, 11, 90])
+print(bubble_sort([64, 34, 25, 12, 22, 11, 90]))  # Output: [11, 12, 22, 25, 34, 64, 90]
+'''
+
+'''
 # Recursion:
 # a process in which a function calls itself as a part of its execution. 
 # It’s an important concept for breaking down complex problems into smaller, 
@@ -24,7 +84,8 @@ def UCLN(a, b):
         return UCLN(b, a%b)
     return UCLN(a, b%a)
 
-print(UCLN(98700,550))
+print(UCLN(986856457700,987))
+'''
 
 '''
 # sum of digits of a number
