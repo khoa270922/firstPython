@@ -1,4 +1,50 @@
 # Sorting Algorithms
+'''
+# Quick sort
+def quick_sort(arr):
+    if len(arr) <= 1: 
+        return arr # Base case: If the array has 0 or 1 elements, it's already sorted
+    # Choose a pivot (in this case, we take the last element)
+    # pivot = arr[-1] 
+    pivot = arr[0]
+    #pivot = arr[len(arr) // 2]
+
+    # Partition the array into two sub-arrays
+    # all elements less than the pivot are on its left 
+    # and all elements greater than the pivot are on its right.
+    # left = [x for x in arr[:-1] if x <= pivot]
+    # right = [x for x in arr[:-1] if x > pivot]
+    left = [x for x in arr[1:len(arr)] if x <= pivot] # Elements smaller or equal to pivot
+    right = [x for x in arr[1:len(arr)] if x > pivot] # Elements larger than pivot
+    
+    # Recursively apply the same process to the sub-arrays 
+    # until the entire array is sorted.
+    print(arr)
+    return quick_sort(left) + [pivot] + quick_sort(right)
+
+# Test the function
+arr = [10, 7, 8, 9, 1, 5]
+sorted_arr = quick_sort(arr)
+print(sorted_arr)  # Output should be [1, 5, 7, 8, 9, 10]
+'''
+
+'''
+# Selection Sort
+def select_sort(arr):
+    for i in range(len(arr)):
+        min_index = i
+        for j in range(i+1, len(arr)):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        # Swap the found minimum element with the current element
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+        print(arr)
+    return arr
+print([64, 34, 25, 12, 22, 11, 90])
+print(select_sort([64, 34, 25, 12, 22, 11, 90]))
+'''
+
+'''
 # Merge sort
 def merge_sort(arr):
     if len(arr) > 1:
@@ -40,6 +86,7 @@ def merge_sort(arr):
 # Test the function
 print([64, 34, 25, 12, 22, 11, 90])
 print(merge_sort([64, 34, 25, 12, 22, 11, 90]))  # Output: [3, 9, 10, 27, 38, 43, 82]
+'''
 
 '''
 # Bubble Sort
