@@ -1,25 +1,69 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('daily_index.csv')
+df['Date'] = pd.to_datetime(df['Date'])
+print(df)
+
+vn30 = df.loc[(df['Stock'] == 'VN30')]
+# Reverse the date
+vn30 = vn30[::-1]
+# Draw the chart
+vn30.plot(x = 'Date', y = 'Price', kind = 'line', title = ' Prices Over Time')
+plt.show()
+
+
+'''
+df = pd.read_csv('daily_index.csv')
+# Get all VN30 daily indices
+vn30 = df.loc[(df['Stock'] == 'VN30')]
+# Reverse the date
+vn30 = vn30[::-1]
+# Draw the chart
+vn30.plot(x = 'Date', y = 'Price', kind = 'line', title = ' Prices Over Time')
+plt.show()
+'''
+
+'''
+# Grouping and plotting the average price for each stock
+grouped = df.groupby('Stock')['Price'].mean()
+grouped.plot(kind='bar', title='Average Stock Price')
+plt.ylabel('Price')
+plt.show()
+'''
+
+'''
+df.groupby('Stock') == ''
+df.plot(x = 'Date', y = 'Price', kind = 'line', title = 'Stock Prices Over Time')
+plt.show()
+'''
+
+'''
+print(df.loc[(df['Stock'] == 'VN30')])
+mean_group = df.groupby('Stock')['Price'].mean()
+max_group = df.groupby('Stock')['Price'].max()
+min_group = df.groupby('Stock')['Price'].min()
+print(mean_group)
+print(max_group)
+print(min_group)
+'''
+
+'''
 import csv
 with open('VN30.csv', 'r') as file:
-    csvreader = csv.reader(file)
-
-    everyone = []
-
-    for row in csvreader:
-       if row[0] == 'Date':
-           pass
-       else:
-           testid = row[0]
-           temp_list = []
-           for element in row[1:]:
-               if element == '':
-                   pass
-               else:
-                   temp_list.append(element)
-            #temp_list.append(testid)
-            everyone.append(temp_list)
-           
-
+    csv_reader = csv.reader(file)
+    head = []
+    lp_test = []
+    with open('daily_index.csv', 'w', newline='') as file:
+       csvwriter = csv.writer(file)
+       csvwriter.writerow(['Date', 'Stock', 'Price'])
+       for index, row in enumerate(csv_reader):
+        if index == 0:
+            head = row
+        else:
+            for i in range(1, len(row)):
+               csvwriter.writerow([row[0], head[i], row[i]])
+'''
     
 #prices = df['Price']
 #print(prices)
