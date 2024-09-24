@@ -26,7 +26,7 @@ import psycopg2
 # connection info
 connection = psycopg2.connect(
     host="104.199.242.171",
-    database="trading-data",
+    database="trading_data",
     user="trading_user",
     password="123456"
 )
