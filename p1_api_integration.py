@@ -1,3 +1,4 @@
+'''
 import requests
 import json
 
@@ -20,8 +21,8 @@ def get_token():
 
 token = get_token()
 print(token)
-
 '''
+
 import psycopg2
 # connection info
 connection = psycopg2.connect(
@@ -39,7 +40,8 @@ print(f"Connected to: {db_version}")
 
 cursor.close()
 connection.close()
-'''
+
+
 '''
 import requests
 
