@@ -1,3 +1,27 @@
+import requests
+import json
+
+URL_AUTHENTICATION = 'https://auth.fiintrade.vn/'
+URL_ROOT = 'http://df31.fiintek.com'
+USERNAME = 'StoxPlus.FiinTrade.SPA'
+PASSWORD = 'fiin%**(trade'
+
+def get_token():
+    body = {
+        'grant_type': 'refresh_token',
+        'client_id': 'StoxPlus.FiinTrade.SPA',
+        'client_secret': 'fiin%**(trade',
+        #'scope': 'openid fiintek.datafeed',
+        #'username': USERNAME,
+        #'password': PASSWORD,
+    }
+    res = requests.post(URL_AUTHENTICATION, data=body)
+    return json.loads(res.text)
+
+token = get_token()
+print(token)
+
+'''
 import psycopg2
 # connection info
 connection = psycopg2.connect(
@@ -15,7 +39,7 @@ print(f"Connected to: {db_version}")
 
 cursor.close()
 connection.close()
-
+'''
 '''
 import requests
 
