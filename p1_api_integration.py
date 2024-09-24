@@ -1,3 +1,22 @@
+import psycopg2
+# connection info
+connection = psycopg2.connect(
+    host="104.199.242.171",
+    database="trading-data",
+    user="trading_user",
+    password="123456"
+)
+cursor = connection.cursor()
+
+# Example query to check connection
+cursor.execute("SELECT version();")
+db_version = cursor.fetchone()
+print(f"Connected to: {db_version}")
+
+cursor.close()
+connection.close()
+
+'''
 import requests
 
 # Step 1: Function to authenticate and retrieve Bearer token
@@ -56,7 +75,7 @@ def get_data_with_token():
 
 # Run the data fetching function
 #get_data_with_token()
-
+'''
 
 
 # API Integration for Real-Time Stock Data
