@@ -23,25 +23,6 @@ token = get_token()
 print(token)
 '''
 
-import psycopg2
-# connection info
-connection = psycopg2.connect(
-    host="35.236.185.5",
-    database="trading_data",
-    user="trading_user",
-    password="123456"
-)
-cursor = connection.cursor()
-
-# Example query to check connection
-cursor.execute("SELECT version();")
-db_version = cursor.fetchone()
-print(f"Connected to: {db_version}")
-
-cursor.close()
-connection.close()
-
-
 '''
 import requests
 
