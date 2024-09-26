@@ -26,7 +26,7 @@ print(token)
 import psycopg2
 # connection info
 connection = psycopg2.connect(
-    host="104.199.242.171",
+    host="35.236.185.5",
     database="trading_data",
     user="trading_user",
     password="123456"
