@@ -1,5 +1,12 @@
-
-
+import decimal
+import datetime as dt
+#from datetime import datetime
+chuoi = "3.4556:1"
+date = "20240910"
+print(decimal.Decimal(chuoi[:-2]))  # Output: Pytho
+print(dt.datetime.strptime(date, '%Y%m%d'))
+print(dt.datetime.now())
+#date = datetime.strptime(a, '%Y%m%d').strftime('%m/%d/%Y')
 
 # Context Managers
 # allow you to manage resources:

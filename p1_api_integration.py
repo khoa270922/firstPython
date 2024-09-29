@@ -1,7 +1,97 @@
-'''
+import datetime as dt
+#from datetime import datetime
 import requests
 import json
+import pandas as pd
+import logging
+import psycopg2
+#import string
+import decimal
+'''
+def get_ExRight_list():      
+    params = {
+        'fromDate': (datetime.datetime.today() - datetime.timedelta(1)).strftime('%d/%m/%Y'),
+        'toDate': (datetime.datetime.today() - datetime.timedelta(1)).strftime('%d/%m/%Y'),
+        'eventCode': 'DIV,ISS,AIS',
+        'dateType': 'ExrightDate',
+        'language': 'vn'
+        }
+    response = requests.get('https://iboard-api.ssi.com.vn/statistics/company/corporate-actions?',params= params, headers= {'user-agent': 'Mozilla/5.0'})
+    if response.status_code == 200:
+        data = response.json()
+        dump = json.dumps(data)
+        body = json.loads(dump)
+        # Check if api_data has non-empty values
+        if 'data' in body and all(body.values()) and isinstance(body['data'], list) and len(body['data']) > 0:          
+            df = pd.DataFrame(body['data'])
+            logging.info("Exright Data received successfully, inserting into the database.")
+            return df['symbol'].drop_duplicates().tolist()
+        else:
+            logging.warning("Exright API response returned successfully but no data available.")
+            print(body.values())
+            return []
+    else:
+        print(f"Exright Failed to fetch data. Status Code: {response.status_code}")
+        return []
 
+print(get_ExRight_list())
+'''        
+def update_CW():
+    response = requests.get('https://iboard-query.ssi.com.vn/v2/stock/type/w/hose', headers= {'user-agent': 'Mozilla/5.0'})
+    if response.status_code == 200:
+        insert_query = """
+        INSERT INTO cw (serial, ticker, issuer, last_trading_date, end_date, pre_close, ceil, floor, ref, bid_p3, bid_vol3, bid_p2, bid_vol2, bid_p1, bid_vol1, match_price, match_vol, change, change_percent, ask_p1, ask_vol1, ask_p2, ask_vol2, ask_p3, ask_vol3, total_vol, total_val, open, high, low, close, avg, symbol, strike_price, cvn_ratio, listed_share, break_even)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (ticker) DO NOTHING;  -- Avoid inserting duplicates
+        """
+        data = response.json()
+        dump = json.dumps(data)
+        body = json.loads(dump)
+        df = pd.DataFrame(body['data'])
+        us_list = df['us'].drop_duplicates().tolist()
+        # Check if api_data has non-empty values
+        if 'data' in body and all(body.values()) and isinstance(body['data'], list) and len(body['data']) > 0:   
+            try:
+                # Open DB
+                connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
+                cursor = connection.cursor()
+                
+                # Truncate CW table
+                cursor.execute("TRUNCATE TABLE CW;")
+                connection.commit()
+                
+                # Insert CW data
+                for i in range(len(body['data'])):
+                    try:
+                        cursor.execute(insert_query, (body['data'][i]['sn'], body['data'][i]['ss'], body['data'][i]['isn'], dt.datetime.strptime(body['data'][i]['ltd'], '%Y%m%d'), dt.datetime.strptime(body['data'][i]['md'], '%Y%m%d'), body['data'][i]['pcp'], body['data'][i]['c'], body['data'][i]['f'], body['data'][i]['r'], body['data'][i]['b3'], body['data'][i]['b3v'], body['data'][i]['b2'], body['data'][i]['b2v'], body['data'][i]['b1'], body['data'][i]['b1v'], body['data'][i]['mp'], body['data'][i]['mv'], body['data'][i]['pc'], body['data'][i]['cp'], body['data'][i]['o1'], body['data'][i]['o1v'], body['data'][i]['o2'], body['data'][i]['o2v'], body['data'][i]['o3'], body['data'][i]['o3v'], body['data'][i]['mtq'], body['data'][i]['mtv'], body['data'][i]['o'], body['data'][i]['h'], body['data'][i]['l'], body['data'][i]['lmp'], body['data'][i]['ap'], body['data'][i]['us'], body['data'][i]['ep'], decimal.Decimal(body['data'][i]['er'][:-2]), body['data'][i]['rfq'], body['data'][i]['mp']*decimal.Decimal(body['data'][i]['er'][:-2])+body['data'][i]['ep']))
+                        connection.commit()
+                        logging.info(f"{dt.date.today()} Success {body['data'][i]['sn']} ")
+                    except Exception as e:
+                        logging.error(f"{dt.date.today()} Fail {body['data'][i]['sn']} ")
+        
+                cursor.close()
+                connection.close()
+                logging.info("CW Data received successfully, inserting into the database.")
+            
+            except Exception as e:
+                logging.error(f"Failed to insert data: {e}")
+                us_list = []
+
+        else:
+            logging.warning("CW API response returned successfully but no data available.")
+            print(body.values())
+            us_list = []
+        return us_list
+    else:
+        print(f"CW Failed to fetch data. Status Code: {response.status_code}")
+        return []
+
+print(update_CW())
+
+
+
+
+'''
 URL_AUTHENTICATION = 'https://auth.fiintrade.vn/'
 URL_ROOT = 'http://df31.fiintek.com'
 USERNAME = 'StoxPlus.FiinTrade.SPA'
