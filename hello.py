@@ -6,30 +6,7 @@ import psycopg2
 import requests
 import json
 
-# URL for the API call
-url = 'https://iboard-api.ssi.com.vn/statistics/charts/history?resolution=1D&symbol=ACB&from=1727715600&to=1727802000'
-
-# Make the GET request to the API
-response = requests.get(url)
-
-# Check if the request was successful
-if response.status_code == 200:
-    try:
-        # Parse the JSON response
-        data = response.json()
-        print("Data received from API:", data)
-
-        # Example of extracting 'time' and 'high' arrays from the response
-        time_array = data.get('time', [])
-        high_array = data.get('high', [])
-        
-        print("Time:", time_array)
-        print("High:", high_array)
-
-    except json.JSONDecodeError as e:
-        print(f"Error parsing JSON: {e}")
-else:
-    print(f"Failed to retrieve data: HTTP {response.status_code}")
+print(time.mktime)
 
 #from datetime import datetime
 #chuoi = "3.4556:1"

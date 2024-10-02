@@ -114,7 +114,6 @@ def stock_prices(ex_list, us_list, connection, cursor):
     
     today = dt.date.today()
     last_year = round(time.mktime((today.year - 1, today.month, today.day, 0, 0, 0, 0, 0, 0)))
-    yesterday = round(time.mktime((today.year, today.month, today.day - 5, 0, 0, 0, 0, 0, 0)))
     to_date = round(time.mktime((today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)))
     
     ssi_headers = {
@@ -135,8 +134,7 @@ def stock_prices(ex_list, us_list, connection, cursor):
                 SET time=excluded.time, date=excluded.date, stock=excluded.stock, open=excluded.open, high=excluded.high, low=excluded.low, close=excluded.close, volume=excluded.volume, created_date=excluded.created_date
         ;  -- Avoid inserting duplicates
     """
-    expected_fields = ['t', 'h', 'l', 'o', 'c', 'v']
-                       
+    
     # Get current underlying stocks
     cur_list = []
     cursor.execute("SELECT DISTINCT (stock), to_char(date,'YYYYmmdd')  FROM public.stock_prices where date = ( select MAX(date)  FROM public.stock_prices)")
@@ -145,58 +143,65 @@ def stock_prices(ex_list, us_list, connection, cursor):
    
     for stock in us_list:
         if (stock not in ex_list) and any(stock[0] in tup for tup in cur_list):
-            ssi_url = 'https://iboard-api.ssi.com.vn/statistics/charts/history?resolution=' + INTERVAL + '&symbol=' + stock[0] + '&from=' + str(yesterday) + '&to=' + str(to_date)
-            print(ssi_url)
-        else:
-            ssi_url = 'https://iboard-api.ssi.com.vn/statistics/charts/history?resolution=' + INTERVAL + '&symbol=' + stock[0] + '&from=' + str(last_year) + '&to=' + str(to_date)
-        
-        response = requests.get(ssi_url, headers = ssi_headers)
-
-        if response.status_code == 200:
-            print(response.status_code)
-
-            data = response.json()
-            dump = json.dumps(data)
-            body = json.loads(dump)
-            print(data)
-            # Check if api_data has non-empty values
-            print(data)
-            if 'data' in body and all(body['data'].values()) and len(body['data']) > 0:
-                # Extract the time array and high array from the JSON response
-                time_array = body['data']['t']  # list of UNIX timestamps
-                high_array = body['data']['h']  # list of high prices
-                low_array = body['data']['l']
-                open_array = body['data']['o']
-                close_array = body['data']['c']
-                vol_array = body['data']['v']
-
-                # Create a list of tuples, converting timestamps to readable dates
-                combined_data = []
-                for i in range(len(time_array)):
-                    # Convert each UNIX timestamp to a datetime object
-                    date = dt.datetime.fromtimestamp(time_array[i]).strftime('%Y-%m-%d')
-                    # Create a tuple with the converted time, high value, and the current date
-                    combined_data.append((time_array[i], date, stock[0], open_array[i], high_array[i], low_array[i], close_array[i], vol_array[i], dt.datetime.now()))
-                print(combined_data)
-                cursor.executemany(insert_query, combined_data)
+            ssi_url = 'https://iboard-query.ssi.com.vn/v2/stock/' + stock[0]
+            response = requests.get(ssi_url, headers = ssi_headers)
+            
+            if response.status_code == 200:
+                data = response.json()
                 
-                connection.commit()
-
-                logging.info(f"Underlying Stock {stock[0]} history received successfully, inserting into the database.")
+                if 'data' in data and all(data.values()) and len(data) > 0:
+                    cursor.execute(insert_query, [to_date, dt.datetime.today().strftime('%Y-%m-%d'), stock[0], data['data']['o'],data['data']['h'],data['data']['l'],data['data']['c'],data['data']['mtq'],dt.datetime.now()])
+                    connection.commit()
+                    logging.info(f"Underlying Stock {stock[0]} history received successfully, inserting into the database.")
+                else:
+                    logging.info("Empty data")                
             else:
-                logging.info("Empty data")
+                logging.error(response.status_code)        
         else:
-            logging.error(response.status_code)
-        
+            ssi_url = 'https://iboard-api.ssi.com.vn/statistics/charts/history?resolution=' + INTERVAL + '&symbol=' + stock[0] + '&from=' + str(last_year) + '&to=' + str(to_date)        
+            response = requests.get(ssi_url, headers = ssi_headers)
 
+            if response.status_code == 200:
+                data = response.json()
+                dump = json.dumps(data)
+                body = json.loads(dump)
+
+                # Check if api_data has non-empty values
+                if 'data' in body and all(body['data'].values()) and len(body['data']) > 0:
+                    # Extract the time array and high array from the JSON response
+                    time_array = body['data']['t']  # list of UNIX timestamps
+                    high_array = body['data']['h']  # list of high prices
+                    low_array = body['data']['l']
+                    open_array = body['data']['o']
+                    close_array = body['data']['c']
+                    vol_array = body['data']['v']
+
+                    # Create a list of tuples, converting timestamps to readable dates
+                    combined_data = []
+                    for i in range(len(time_array)):
+                        # Convert each UNIX timestamp to a datetime object
+                        date = dt.datetime.fromtimestamp(time_array[i]).strftime('%Y-%m-%d')
+                        # Create a tuple with the converted time, high value, and the current date
+                        combined_data.append((time_array[i], date, stock[0], open_array[i], high_array[i], low_array[i], close_array[i], vol_array[i], dt.datetime.now()))
+                    
+                    cursor.executemany(insert_query, combined_data)
+                    
+                    connection.commit()
+
+                    logging.info(f"Underlying Stock {stock[0]} history received successfully, inserting into the database.")
+                else:
+                    logging.info("Empty data")
+            else:
+                logging.error(response.status_code)
+        
 try:
-    EX_LIST = [('PNJ', '20240930')]  # get_ExRight_list()
+    EX_LIST = get_ExRight_list() # [('PNJ', '20240930')]
     
     # Open DB
     connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
     cursor = connection.cursor()
     
-    US_LIST = [('FPT', '20241002')] # update_CW(connection, cursor) # 
+    US_LIST = update_CW(connection, cursor) # [('FPT', '20241002')]
 
     stock_prices(EX_LIST, US_LIST, connection, cursor)
 
