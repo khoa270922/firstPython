@@ -86,10 +86,53 @@ def update_CW():
         print(f"CW Failed to fetch data. Status Code: {response.status_code}")
         return []
 
-print(update_CW())
+#print(update_CW())
+
+from sqlalchemy import create_engine
+
+# Create SQLAlchemy engine for PostgreSQL
+engine = create_engine('postgresql+psycopg2://trading_user:123456@35.236.185.5/trading_data')
+
+# Insert the DataFrame into PostgreSQL (None values will be inserted as NULL)
+expected_fields = ['sn', 'ss', 'isn', 'ltd', 'md', 'pcp', 'c', 'f', 'r', 'b3', 'b3v', 'b2', 'b2v', 'b1', 'b1v', 'mp', 'mv', 'pc', 'cp', 'o1', 'o1v', 'o2', 'o2v', 'o3', 'o3v', 'mtq', 'mtv', 'o', 'h', 'l', 'lmp', 'ap', 'us', 'ep', 'er', 'rfq', 'be']
 
 
 
+response = requests.get('https://iboard-query.ssi.com.vn/v2/stock/type/w/hose', headers= {'user-agent': 'Mozilla/5.0'})
+if response.status_code == 200:
+
+    data = response.json()
+    dump = json.dumps(data)
+    body = json.loads(dump)
+    
+    '''
+    for column in df.columns:
+        print(f"Checking column: {column}")
+        for value in df[column]:
+            if isinstance(value, dict):
+                print(f"Found in column {column}, value: {value}")
+     '''         
+    #print(body['data'])
+    
+    clean_data = []
+    for record in body['data']:
+        
+        clean_record = {}
+        for field in expected_fields:
+            #print(f"{field}:{record.get(field)}")
+            clean_record[field] = record.get(field)
+        clean_data.append(clean_record)
+
+    df = pd.DataFrame(clean_data)
+    print(df)
+    
+
+    #df = pd.json_normalize(df['mv'].fillna('').apply(dict).tolist())
+    #df = df.where(pd.notnull(df), None)
+    #us_list = df['us'].drop_duplicates().tolist()
+    
+    #df.to_sql('cw', engine, if_exists='append', index=False)
+    #print(df.to_markdown())
 
 '''
 URL_AUTHENTICATION = 'https://auth.fiintrade.vn/'

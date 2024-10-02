@@ -1,11 +1,90 @@
 import decimal
 import datetime as dt
+import time
+import psycopg2
+
+import requests
+import json
+
+# URL for the API call
+url = 'https://iboard-api.ssi.com.vn/statistics/charts/history?resolution=1D&symbol=ACB&from=1727715600&to=1727802000'
+
+# Make the GET request to the API
+response = requests.get(url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    try:
+        # Parse the JSON response
+        data = response.json()
+        print("Data received from API:", data)
+
+        # Example of extracting 'time' and 'high' arrays from the response
+        time_array = data.get('time', [])
+        high_array = data.get('high', [])
+        
+        print("Time:", time_array)
+        print("High:", high_array)
+
+    except json.JSONDecodeError as e:
+        print(f"Error parsing JSON: {e}")
+else:
+    print(f"Failed to retrieve data: HTTP {response.status_code}")
+
 #from datetime import datetime
-chuoi = "3.4556:1"
-date = "20240910"
-print(decimal.Decimal(chuoi[:-2]))  # Output: Pytho
-print(dt.datetime.strptime(date, '%Y%m%d'))
-print(dt.datetime.now())
+#chuoi = "3.4556:1"
+#date = "20240910"
+#a= [(1,2),(1,4),(3,5),(5,7)]
+#b= [('ACB', '20240927'), ('FPT', '20240927')]
+#print(dt.datetime.today().strftime('%Y-%m-%d'))
+#print(decimal.Decimal(chuoi[:-2]))  # Output: Pytho
+#print(dt.datetime.strptime(date, '%Y%m%d'))
+#print(dt.datetime.now())
+#print(dt.datetime.today().date().strftime('%Y-%m-%d'))
+#print(dt.datetime.fromtimestamp(1726444800).strftime('%Y-%m-%d'))
+#print( '2' in dict(a))
+#print(dict(a))
+#print(any (9  in tub for tub in a))
+#print(any('ACB' not in tup for tup in b))
+'''
+today = dt.date.today()
+from_date = round(time.mktime((today.year - 1, today.month, today.day, 0, 0, 0, 0, 0, 0)))
+to_date = round(time.mktime((today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)))
+print(today)
+print(from_date)
+print(to_date)
+'''
+'''
+today = dt.date.today()
+
+from_date = round(time.mktime((today.year - 1, today.month, today.day, 0, 0, 0, 0, 0, 0)))
+to_date = round(time.mktime((today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)))
+print(today)
+print(from_date)
+print(to_date)
+print(dt.datetime.today().strftime('%Y%m%d'))
+'''
+'''
+try:
+    # Open DB
+    connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
+    cursor = connection.cursor()
+    
+    cur_us = []
+    cursor.execute("SELECT DISTINCT (stock), date FROM public.stock_prices where date = ( select MAX(date)  FROM public.stock_prices)")
+    fetch = cursor.fetchall()
+    for row in fetch: 
+        cur_us.append(row[0])
+    print(cur_us)
+    #US_LIST = update_CW(connection, cursor)
+
+    cursor.close()
+    connection.close()
+
+except Exception as e:
+    print(e)
+    #logging.error(f"Failed to insert data: {e}")
+'''
 #date = datetime.strptime(a, '%Y%m%d').strftime('%m/%d/%Y')
 
 # Context Managers
