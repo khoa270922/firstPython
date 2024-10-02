@@ -152,9 +152,9 @@ def stock_prices(ex_list, us_list, connection, cursor):
                 if 'data' in data and all(data.values()) and len(data) > 0:
                     cursor.execute(insert_query, [to_date, dt.datetime.today().strftime('%Y-%m-%d'), stock[0], data['data']['o'],data['data']['h'],data['data']['l'],data['data']['c'],data['data']['mtq'],dt.datetime.now()])
                     connection.commit()
-                    logging.info(f"Underlying Stock {stock[0]} history received successfully, inserting into the database.")
+                    logging.info(f"Underlying Stock {stock[0]} CURRENT received successfully, inserting into the database.")
                 else:
-                    logging.info("Empty data")                
+                    logging.info("Empty CURRENT data")                
             else:
                 logging.error(response.status_code)        
         else:
@@ -188,9 +188,9 @@ def stock_prices(ex_list, us_list, connection, cursor):
                     
                     connection.commit()
 
-                    logging.info(f"Underlying Stock {stock[0]} history received successfully, inserting into the database.")
+                    logging.info(f"Underlying Stock {stock[0]} HISTORY received successfully, inserting into the database.")
                 else:
-                    logging.info("Empty data")
+                    logging.info("Empty HISTORY data")
             else:
                 logging.error(response.status_code)
         
@@ -212,28 +212,7 @@ try:
 except Exception as e:
     logging.error(f"Failed to insert data: {e}")
 
-
 '''
-today = datetime.date.today()
-#today = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-from_date = round(time.mktime((today.year - 1, today.month, today.day, 0, 0, 0, 0, 0, 0)))
-to_date = round(time.mktime((today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)))
-#print(from_date, to_date)
-
-LIST_STOCK = ('ACB', 'VNM')
-INTERVAL = '1D'
-ssi_url = 'https://iboard-api.ssi.com.vn/statistics/charts/history?resolution=' + INTERVAL + '&symbol=' + LIST_STOCK[0] + '&from=' + str(from_date) + '&to=' + str(to_date)
-#vietstock_url = 'https://api.vietstock.vn/ta/history?symbol=' + LIST_STOCK[0] + '&resolution=D&from=' + str(from_date) + '&to=' + str(to_date)
-
-ssi_headers = {
-    'User-Agent': 'Mozilla/5.0',
-    'Accept': '*/*',
-    'Cache-Control': 'no-cache',
-    'Accept-Encoding': 'gzip,deflate, br',
-    'Connection': 'keep-alive',
-}
-
-
 vietstock_headers = {
     'Referer': 'https://ta.vietstock.vn',
     'User-Agent': 'Mozilla/5.0',
@@ -243,14 +222,6 @@ vietstock_headers = {
     'Accept-Encoding': 'gzip,deflate, br',
     'Connection': 'keep-alive',
 }
-
-# Insert data into PostgreSQL
-insert_query = """
-INSERT INTO stock_prices (time, date, stock, open, high, low, close, volume)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (stock, date) DO NOTHING;  -- Avoid inserting duplicates
-"""
-
 
 response = requests.get(ssi_url, headers = ssi_headers)
 if response.status_code == 200:
@@ -262,121 +233,23 @@ if response.status_code == 200:
     df = pd.DataFrame({'Time': body['data']['t'], 'High': body['data']['h'], 'Low': body['data']['l'], 'Open': body['data']['o'], 'Close': body['data']['c'], 'Volume': body['data']['v']})
     df['Date'] = pd.to_datetime(df['Time'],unit='s')
     df['Stock'] = LIST_STOCK[0]
-    print(df)
 '''
 
 '''
-    connection = None
-
-    try:
-        # Open DB
-        connection = psycopg2.connect(
-            host="35.236.185.5", #104.199.242.171",
-            database="trading_data", #"postgres",
-            user="trading_user", #"postgres"
-            password="123456" #"J,@CC2@oCa{R'^O]"
-        )
-        cursor = connection.cursor()
-
-        # Loop over the length of the data and insert row by row
-        for i  in range(len(body['data']['t'])):
-            try:
-                cursor.execute(insert_query, (body['data']['t'][i], datetime.datetime.fromtimestamp(body['data']['t'][i]), LIST_STOCK[0], body['data']['h'][i], body['data']['l'][i], body['data']['o'][i], body['data']['c'][i], body['data']['v'][i]))
-                logging.info(f"{datetime.date.today()} Success {LIST_STOCK[0]} on {datetime.datetime.fromtimestamp(body['data']['t'][i])}")
-            except Exception as e:
-                logging.error(f"{datetime.date.today()} Fail {LIST_STOCK[0]} on {datetime.datetime.fromtimestamp(body['data']['t'][i])}")
-        
-        connection.commit()
-        logging.info("All data committed successfully")
-    
-    except Exception as e:
-        logging.critical(f"Database connection error: {e}")
-
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            logging.info("Database connection closed")
-'''
-#else:
-#    print(f"fail: {response.status_code} {response.text}")
-
-
-'''
-# Api Data return as a list
-import psycopg2
-import logging
-
-# Configure logging
-logging.basicConfig(filename='data_insertion.log', 
-                    level=logging.INFO, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+# Api Data return as a list OF DICTS
 
 # Example API response (mock data)
 api_data = [
     {'stock': 'AAPL', 'date': '2024-09-18', 'open': 150.25, 'high': 152.50, 'low': 149.75, 'close': 151.00, 'volume': 50000000},
     {'stock': 'GOOG', 'date': '2024-09-18', 'open': 2700.50, 'high': 2750.00, 'low': 2680.25, 'close': 2725.75, 'volume': 3000000}
 ]
-
-# Database connection details
-connection = None
-
-try:
-    connection = psycopg2.connect(
-        host="YOUR_PUBLIC_IP",
-        database="trading_data",
-        user="trading_user",
-        password="YOUR_PASSWORD"
-    )
-
-    cursor = connection.cursor()
-
-    insert_query = """
-    INSERT INTO stock_prices (stock, date, open, high, low, close, volume)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
-    ON CONFLICT (stock, date) DO NOTHING;
-    """
-
-    for data in api_data:
-        try:
-            cursor.execute(insert_query, (
-                data['stock'], 
-                data['date'], 
-                data['open'], 
-                data['high'], 
-                data['low'], 
-                data['close'], 
-                data['volume']
-            ))
-            logging.info(f"Data inserted successfully for {data['stock']} on {data['date']}")
-        except Exception as e:
-            logging.error(f"Failed to insert data for {data['stock']} on {data['date']}: {e}")
-
-    connection.commit()
-    logging.info("All data committed successfully")
-
-except Exception as e:
-    logging.critical(f"Database connection error: {e}")
-
-finally:
-    if connection:
-        cursor.close()
-        connection.close()
-        logging.info("Database connection closed")
+for data in api_data:
+    cursor.execute(insert_query, (data['stock'], data['date'], data['open'], data['high'], data['low'], data['close'], data['volume']))
 '''
 
 '''
 # Api_data is structured as a dictionary 
 # Method 1:
-import psycopg2
-import logging
-
-# Configure logging
-logging.basicConfig(filename='data_insertion.log', 
-                    level=logging.INFO, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Example API response with lists as values
 api_data = {
     'stock': ['AAPL', 'GOOG'],
     'date': ['2024-09-18', '2024-09-18'],
@@ -386,84 +259,22 @@ api_data = {
     'close': [151.00, 2725.75],
     'volume': [50000000, 3000000]
 }
-
-# Database connection details
-connection = None
-
-try:
-    connection = psycopg2.connect(
-        host="YOUR_PUBLIC_IP",
-        database="trading_data",
-        user="trading_user",
-        password="YOUR_PASSWORD"
-    )
-
-    cursor = connection.cursor()
-
-    insert_query = """
-    INSERT INTO stock_prices (stock, date, open, high, low, close, volume)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
-    ON CONFLICT (stock, date) DO NOTHING;
-    """
-
-    # Loop over the length of the data and insert row by row
-    for i in range(len(api_data['stock'])):
-        try:
-            cursor.execute(insert_query, (
-                api_data['stock'][i],
-                api_data['date'][i],
-                api_data['open'][i],
-                api_data['high'][i],
-                api_data['low'][i],
-                api_data['close'][i],
-                api_data['volume'][i]
-            ))
-            logging.info(f"Data inserted successfully for {api_data['stock'][i]} on {api_data['date'][i]}")
-        except Exception as e:
-            logging.error(f"Failed to insert data for {api_data['stock'][i]} on {api_data['date'][i]}: {e}")
-
-    connection.commit()
-    logging.info("All data committed successfully")
-
-except Exception as e:
-    logging.critical(f"Database connection error: {e}")
-
-finally:
-    if connection:
-        cursor.close()
-        connection.close()
-        logging.info("Database connection closed")
+# Loop over the length of the data and insert row by row
+for i in range(len(api_data['stock'])):
+    cursor.execute(insert_query, (api_data['stock'][i], api_data['date'][i], api_data['open'][i], api_data['high'][i], api_data['low'][i], api_data['close'][i], api_data['volume'][i]))
 
 '''
 
 '''
 # Api data is structured as a dictionary
 # Method 2: using dataframe
-import pandas as pd
-
-# Example API response with lists as values
-api_data = {
-    'stock': ['AAPL', 'GOOG'],
-    'date': ['2024-09-18', '2024-09-18'],
-    'open': [150.25, 2700.50],
-    'high': [152.50, 2750.00],
-    'low': [149.75, 2680.25],
-    'close': [151.00, 2725.75],
-    'volume': [50000000, 3000000]
-}
-
 # Convert the dictionary into a DataFrame
-df = pd.DataFrame(api_data)
-print(df)
-
 from sqlalchemy import create_engine
-import psycopg2
-
+df = pd.DataFrame(api_data)
 # Create the SQLAlchemy engine
 engine = create_engine('postgresql+psycopg2://trading_user:YOUR_PASSWORD@YOUR_PUBLIC_IP/trading_data')
 
 # Insert the DataFrame into PostgreSQL
-# 'stock_prices' is the table name in the PostgreSQL database
 df.to_sql('stock_prices', engine, if_exists='append', index=False)
 from sqlalchemy.dialects.postgresql import insert
 
@@ -472,5 +283,4 @@ insert_stmt = insert(df).on_conflict_do_nothing()
 
 with engine.connect() as conn:
     conn.execute(insert_stmt)
-
 '''
