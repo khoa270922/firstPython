@@ -8,19 +8,45 @@ import logging
 import decimal
 
 # Configure logging
-logging.basicConfig(filename='data_insertion.log', 
-                    level=logging.INFO, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    filename='data_insertion.log', 
+    level=logging.INFO, 
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
-def get_ExRight_list():      
+def get_ExRight_list():
+    """
+    Fetches the list of stocks with ExRight events for the current date.
+    """  
     params = {
         'fromDate': (dt.datetime.today()).strftime('%d/%m/%Y'), #  - dt.timedelta(2)
         'toDate': (dt.datetime.today()).strftime('%d/%m/%Y'), #  - dt.timedelta(2)
         'eventCode': 'DIV,ISS,AIS',
         'dateType': 'ExrightDate',
         'language': 'vn'
-        }
-    response = requests.get('https://iboard-api.ssi.com.vn/statistics/company/corporate-actions?',params= params, headers= {'user-agent': 'Mozilla/5.0'})
+    }
+    response = requests.get(
+        'https://iboard-api.ssi.com.vn/statistics/company/corporate-actions?',
+        params= params, 
+        headers= {'user-agent': 'Mozilla/5.0'}
+    )
+    if response.status_code == 200:
+        data = response.json()
+        ex_list = []
+        
+        if 'data' in data and isinstance(data['data'], list) and len(data['data']) > 0:
+            for record in data['data']:
+                if record.get('exrightDate'):
+                    unique_t = (record.get('symbol'), dt.datetime.strptime(record.get('exrightDate'), '%d/%m/%Y').strftime('%Y%m%d'))
+                    if unique_t not in ex_list:
+                        ex_list.append(unique_t)
+            return ex_list    
+        logging.warning("Exright API returned no data.")
+        return []
+    else:
+        logging.error(f"Exright Failed to fetch data. Status Code: {response.status_code}")
+        return []
+    """
     if response.status_code == 200:
         data = response.json()
         dump = json.dumps(data)
@@ -44,9 +70,17 @@ def get_ExRight_list():
     else:
         print(f"Exright Failed to fetch data. Status Code: {response.status_code}")
         return []
+    """
 
 def update_CW(connection, cursor):
-    response = requests.get('https://iboard-query.ssi.com.vn/v2/stock/type/w/hose', headers= {'user-agent': 'Mozilla/5.0'})
+    """
+    Fetches and updates Cover Warrant data into the database.
+    """
+    response = requests.get(
+        'https://iboard-query.ssi.com.vn/v2/stock/type/w/hose', 
+        headers= {'user-agent': 'Mozilla/5.0'}
+    )
+    
     if response.status_code == 200:
         
         # Insert the DataFrame into PostgreSQL (None values will be inserted as NULL)
@@ -196,7 +230,8 @@ def stock_prices(ex_list, us_list, connection, cursor):
         
 try:
     EX_LIST = get_ExRight_list() # [('PNJ', '20240930')]
-    
+    print(EX_LIST)
+    '''  
     # Open DB
     connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
     cursor = connection.cursor()
@@ -208,7 +243,7 @@ try:
     # Close DB
     cursor.close()
     connection.close()
-
+    '''
 except Exception as e:
     logging.error(f"Failed to insert data: {e}")
 
