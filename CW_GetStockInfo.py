@@ -98,7 +98,25 @@ def update_CW(connection, cursor):
         data = response.json()
         dump = json.dumps(data)
         body = json.loads(dump)
-        
+
+        if 'data' in data and all(data.values()) and isinstance(data['data'], list) and len(data['data']) > 0:
+            # Get clean data:
+            clean_data = []
+            stocks_list = []
+
+            for record in data['data']:
+                # Get clean record        
+                clean_record = {}
+                for field in expected_fields:
+                    clean_record['Date'] = dt.datetime.today().strftime('%Y-%m-%d')
+                    clean_record[field] = record.get(field)
+                clean_data.append(clean_record) 
+                # Get underlying stocks
+                unique_t = (record.get('us'), dt.datetime.today().strftime('%Y%m%d'))
+                if unique_t not in stocks_list:
+                    stocks_list.append(unique_t)
+
+        '''        
         # Check if api_data has non-empty values
         if 'data' in body and all(body.values()) and isinstance(body['data'], list) and len(body['data']) > 0:
             # Get clean data:
@@ -116,7 +134,7 @@ def update_CW(connection, cursor):
                 unique_t = (record.get('us'), dt.datetime.today().strftime('%Y%m%d'))
                 if unique_t not in stocks_list:
                     stocks_list.append(unique_t)
-
+        '''
             # Delete CW today
             #cursor.execute(f"DELETE FROM cw where date = '{dt.datetime.today().strftime('%Y-%m-%d')}'")
             #connection.commit()
