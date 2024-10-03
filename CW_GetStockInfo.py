@@ -80,7 +80,7 @@ def update_CW(connection, cursor):
         'https://iboard-query.ssi.com.vn/v2/stock/type/w/hose', 
         headers= {'user-agent': 'Mozilla/5.0'}
     )
-    
+
     if response.status_code == 200:
         
         # Insert the DataFrame into PostgreSQL (None values will be inserted as NULL)
@@ -231,7 +231,7 @@ def stock_prices(ex_list, us_list, connection, cursor):
 try:
     EX_LIST = get_ExRight_list() # [('PNJ', '20240930')]
     print(EX_LIST)
-    '''  
+      
     # Open DB
     connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
     cursor = connection.cursor()
@@ -243,7 +243,7 @@ try:
     # Close DB
     cursor.close()
     connection.close()
-    '''
+    
 except Exception as e:
     logging.error(f"Failed to insert data: {e}")
 
