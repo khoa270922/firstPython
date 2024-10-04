@@ -41,27 +41,53 @@ print(from_date)
 print(to_date)
 print(dt.datetime.today().strftime('%Y%m%d'))
 '''
-'''
+
 try:
     # Open DB
-    connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
-    cursor = connection.cursor()
+    #connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
+    #cursor = connection.cursor()
     
-    cur_us = []
-    cursor.execute("SELECT DISTINCT (stock), date FROM public.stock_prices where date = ( select MAX(date)  FROM public.stock_prices)")
-    fetch = cursor.fetchall()
-    for row in fetch: 
-        cur_us.append(row[0])
-    print(cur_us)
-    #US_LIST = update_CW(connection, cursor)
+    ssi_headers = {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': '*/*',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Accept-Encoding': 'gzip,deflate, br, zstd',
+        'Connection': 'keep-alive',
+    }
+    #cursor.execute("SELECT DISTINCT (stock), to_char(date,'YYYYmmdd')  FROM public.stock_prices where date = ( select MAX(date)  FROM public.stock_prices)")
+    #fetch = cursor.fetchall()
+    #cur_list = [row for row in fetch]
+   
 
-    cursor.close()
-    connection.close()
+    ssi_url = 'https://iboard-query.ssi.com.vn/v2/stock/ACB'
+    response = requests.get(ssi_url, headers = ssi_headers)
+    
+    if response.status_code == 200:
+        data = response.json()
+        print(type(data))
+        if 'data' in data and isinstance(data['data'], dict) and len(data['data']) > 0:
+            clean_data = []
+    
+            #for record in data['data']:
+            try:
+                clean_data.append((data['data']['ss'], data['data']['b2']))
+                #clean_data.append((to_date, dt.datetime.today().strftime('%Y-%m-%d'), record.get('ss'), record.get('o')/1000, record.get('h')/1000, record.get('l')/1000, record.get('c')/1000, record.get('mtq')/1000, dt.datetime.now()))
+            except Exception as e:
+                print(f"Data processing error for")# {record.get('ss')}: {e}")
+            # Perform batch insert:
+            #cursor.executemany(insert_query, clean_data)
+            print(clean_data)
+        else:
+            print("Empty CURRENT data")
+
+    #cursor.close()
+    #connection.close()
 
 except Exception as e:
     print(e)
     #logging.error(f"Failed to insert data: {e}")
-'''
+
 #date = datetime.strptime(a, '%Y%m%d').strftime('%m/%d/%Y')
 
 # Context Managers
