@@ -1,12 +1,21 @@
-import decimal
+#import decimal
 import datetime as dt
-import time
-import psycopg2
+#import time
+#import psycopg2
 
-import requests
-import json
+#import requests
+#import json
 
-print(time.mktime)
+def cal_date():
+    today = dt.date.today()
+    return today
+name = 'Hello {}!'.format(cal_date())
+print(dt.date.today().timetuple().tm_yday)
+print(dt.date.today().isocalendar()[1])
+print(dt.date.today().timetuple().tm_mon)
+print(dt.date.today().timetuple().tm_year)
+
+#print(time.mktime)
 
 #from datetime import datetime
 #chuoi = "3.4556:1"
@@ -41,7 +50,7 @@ print(from_date)
 print(to_date)
 print(dt.datetime.today().strftime('%Y%m%d'))
 '''
-
+'''
 try:
     # Open DB
     #connection = psycopg2.connect(host="35.236.185.5", database="trading_data", user="trading_user", password="123456")
@@ -87,7 +96,7 @@ try:
 except Exception as e:
     print(e)
     #logging.error(f"Failed to insert data: {e}")
-
+'''
 #date = datetime.strptime(a, '%Y%m%d').strftime('%m/%d/%Y')
 
 # Context Managers

@@ -1,0 +1,16 @@
+2024-10-07 09:01:21,667 - ERROR - Starting program
+2024-10-07 09:01:33,620 - INFO - CW Data received successfully, inserting into the database.
+2024-10-07 09:01:34,435 - ERROR - Error during execution: Expecting value: line 1 column 1 (char 0)
+2024-10-07 09:01:34,435 - INFO - Database connection closed.
+2024-10-07 09:04:27,791 - ERROR - Starting program
+2024-10-07 09:04:55,446 - ERROR - Error during execution: connection to server at "35.236.185.5", port 5432 failed: Operation timed out
+	Is the server running on that host and accepting TCP/IP connections?
+
+2024-10-07 09:12:09,430 - ERROR - Starting program
+2024-10-07 09:12:37,035 - ERROR - Error during execution: connection to server at "35.236.185.5", port 5432 failed: Operation timed out
+	Is the server running on that host and accepting TCP/IP connections?
+
+2024-10-07 09:13:48,056 - ERROR - Starting program
+2024-10-07 09:14:15,871 - ERROR - Error during execution: connection to server at "35.236.185.5", port 5432 failed: Operation timed out
+	Is the server running on that host and accepting TCP/IP connections?
+
