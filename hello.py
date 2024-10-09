@@ -14,6 +14,7 @@ print(dt.date.today().timetuple().tm_yday)
 print(dt.date.today().isocalendar()[1])
 print(dt.date.today().timetuple().tm_mon)
 print(dt.date.today().timetuple().tm_year)
+print(dt.datetime.today())
 
 #print(time.mktime)
 

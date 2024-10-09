@@ -156,7 +156,7 @@ def stock_prices(ex_list, us_list, connection, cursor):
 
                 if 'data' in data and isinstance(data['data'], dict) and len(data['data']) > 0:                    
                     try:
-                        clean_data.append((to_date, dt.datetime.today().strftime('%Y-%m-%d'), data['data']['ss'], data['data']['o']/1000, data['data']['h']/1000, data['data']['l']/1000, data['data']['c']/1000, data['data']['mtq'], dt.datetime.now()))
+                        clean_data.append((to_date, dt.datetime.today().strftime('%Y-%m-%d'), data['data']['ss'], data['data']['o']/1000, data['data']['h']/1000, data['data']['l']/1000, data['data']['lmp']/1000, data['data']['mtq'], dt.datetime.now()))
                     except Exception as e:
                         logging.error(f"Data processing error for {data['data']['ss']}: {e}")                    
                 else:
