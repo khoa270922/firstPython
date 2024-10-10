@@ -1,11 +1,11 @@
 #import decimal
 import datetime as dt
-#import time
+import time
 #import psycopg2
 
 #import requests
 #import json
-
+'''
 def cal_date():
     today = dt.date.today()
     return today
@@ -15,7 +15,11 @@ print(dt.date.today().isocalendar()[1])
 print(dt.date.today().timetuple().tm_mon)
 print(dt.date.today().timetuple().tm_year)
 print(dt.datetime.today())
-
+'''
+fromdate = round(time.mktime((2024, 10, 2, 0, 0, 0, 0, 0, 0)))
+todate = round(time.mktime((2024, 10, 10, 0, 0, 0, 0, 0, 0)))
+print(fromdate)
+print(todate)
 #print(time.mktime)
 
 #from datetime import datetime
