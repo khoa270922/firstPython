@@ -1,3 +1,4 @@
+
 from tradingview_ta import *
 import requests
 
@@ -9,18 +10,18 @@ tesla = TA_Handler(
     interval= Interval.INTERVAL_1_DAY
 )
 
-td = TA_Handler(symbol= 'tab', screener= 'vietnam', exchange= 'upcom', interval = '1d')
-'''
+td = TA_Handler(symbol= 'vpb', screener= 'vietnam', exchange= 'hose', interval = '1W')
+
 
 tesla = TA_Handler(
     symbol="AAPL",
     screener="america",
     exchange="NASDAQ",
     interval=Interval.INTERVAL_1_DAY,
-    time = '2024-10-08 11:46:33.120935'
 )
+
 #analysis = get_multiple_analysis(screener="vietnam", interval=Interval.INTERVAL_1_DAY, symbols=['HOSE:ACB', 'HOSE:SSI', 'HOSE:NAF'])
-'''
+
 '''
 def get_stock_list():
         response = requests.get(
@@ -60,12 +61,13 @@ else:
 #id = td.get_analysis().indicators
 #mv = td.get_analysis().moving_averages
 
-if td.get_indicators():
-    r = td.get_indicators()
-    print(r)
-#print(td.get_analysis())#.oscillators)
+#if td.get_indicators():
+#    r = td.get_indicators()
+#    print(r)
+#print(td.get_analysis().summary)
+#print(td.get_analysis().oscillators)
 #print(td.get_analysis().moving_averages)
-#print(td.get_indicators())
+print(td.get_indicators())
 #print(td.indicators)
 
 #print(type(mv['COMPUTE']['EMA30']))
@@ -76,5 +78,3 @@ if td.get_indicators():
     #print(f"{field}:{record.get(field)}")
 #print(type(mv['COMPUTE']))
 #print(mv['COMPUTE'].setdefault('Ichimoku', None))
-
-
