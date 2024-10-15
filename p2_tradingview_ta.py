@@ -10,7 +10,7 @@ tesla = TA_Handler(
     interval= Interval.INTERVAL_1_DAY
 )
 
-td = TA_Handler(symbol= 'vpb', screener= 'vietnam', exchange= 'hose', interval = '1W')
+td = TA_Handler(symbol= 'vn30f2410', screener= 'vietnam', exchange= 'hnx', interval = '1d')
 
 
 tesla = TA_Handler(
@@ -67,7 +67,7 @@ else:
 #print(td.get_analysis().summary)
 #print(td.get_analysis().oscillators)
 #print(td.get_analysis().moving_averages)
-print(td.get_indicators())
+#print(td.get_indicators())
 #print(td.indicators)
 
 #print(type(mv['COMPUTE']['EMA30']))
@@ -78,3 +78,24 @@ print(td.get_indicators())
     #print(f"{field}:{record.get(field)}")
 #print(type(mv['COMPUTE']))
 #print(mv['COMPUTE'].setdefault('Ichimoku', None))
+
+url = "https://iboard-query.ssi.com.vn/exchange-index/multiple"
+headers = {
+    #"Content-Type": "application/json",
+    "User-Agent": "Mozilla/5.0"}
+
+# The payload you found
+payload = {
+    "indexIds": ["VNINDEX", "VN30", "HNX30", "VNXALL", "HNXIndex", "HNXUpcomIndex"]
+}
+
+# Sending the POST request
+response = requests.post(url, json=payload, headers=headers)
+
+# Check the response status and content
+if response.status_code == 200:
+    print("Success!")
+    print(response.json())  # Print the returned data (if any)
+else:
+    print(f"Error: {response.status_code}")
+    print(response.text)  # Print any error message returned
