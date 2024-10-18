@@ -16,12 +16,15 @@ print(dt.date.today().timetuple().tm_mon)
 print(dt.date.today().timetuple().tm_year)
 print(dt.datetime.today())
 '''
-fromdate = round(time.mktime((2024, 10, 2, 0, 0, 0, 0, 0, 0)))
-todate = round(time.mktime((2024, 10, 10, 0, 0, 0, 0, 0, 0)))
-print(fromdate)
-print(todate)
+#fromdate = round(time.mktime((2024, 10, 2, 0, 0, 0, 0, 0, 0)))
+#todate = round(time.mktime((2024, 10, 10, 0, 0, 0, 0, 0, 0)))
+#print(fromdate)
+#print(todate)
+print(round(dt.datetime.strptime('2019-05-31', "%Y-%m-%d").timestamp()))
+fromdate_u = dt.datetime.strptime('20241006', "%Y%m%d").timetuple() # from last 1 year
+#todate_u = round(time.mktime((today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)))
 #print(time.mktime)
-
+1559260800
 #from datetime import datetime
 #chuoi = "3.4556:1"
 #date = "20240910"
