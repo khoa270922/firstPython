@@ -74,3 +74,10 @@ cursor.execute("TRUNCATE TABLE CW;")
 
 cursor.close()
 connection.close()
+
+
+# Initialize connection. # Perform query using pandas.
+# conn = st.connection("postgresql", type="sql")
+# query = f"SELECT * FROM history WHERE stock = '{stock_name}'  order by date desc limit 10"    
+# data = pd.read_sql(query, conn)
+    
