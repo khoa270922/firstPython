@@ -20,17 +20,19 @@ print(dt.datetime.today())
 #todate = round(time.mktime((2024, 10, 10, 0, 0, 0, 0, 0, 0)))
 #print(fromdate)
 #print(todate)
-print(round(dt.datetime.strptime('2019-05-31', "%Y-%m-%d").timestamp()))
+print(round(dt.datetime.strptime('2019-05-30', "%Y-%m-%d").timestamp()))
 fromdate_u = dt.datetime.strptime('20241006', "%Y%m%d").timetuple() # from last 1 year
-#todate_u = round(time.mktime((today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)))
+today = dt.date.today()
+print(today)
+todate_u = round(time.mktime((today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)))
+print(todate_u)
 #print(time.mktime)
-1559260800
 #from datetime import datetime
 #chuoi = "3.4556:1"
 #date = "20240910"
 #a= [(1,2),(1,4),(3,5),(5,7)]
 #b= [('ACB', '20240927'), ('FPT', '20240927')]
-#print(dt.datetime.today().strftime('%Y-%m-%d'))
+print(dt.datetime.today().strftime('%Y-%m-%d'))
 #print(decimal.Decimal(chuoi[:-2]))  # Output: Pytho
 #print(dt.datetime.strptime(date, '%Y%m%d'))
 #print(dt.datetime.now())
